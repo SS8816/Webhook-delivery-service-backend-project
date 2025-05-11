@@ -1,0 +1,19 @@
+# Dockerfile for Celery Worker
+
+FROM python:3.9-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the project files
+COPY . .
+
+# Install Celery
+RUN pip install celery redis
+
+# Command to run Celery worker
+CMD ["celery", "-A", "celery_worker.celery_app", "worker", "--loglevel=info", "--concurrency=1", "-Q", "webhook_queue"]

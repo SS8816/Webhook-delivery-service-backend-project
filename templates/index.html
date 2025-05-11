@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Ingestion</title>
+    <script>
+        async function sendWebhook() {
+            const subscriptionId = document.getElementById('subscription_id').value;
+            const payload = document.getElementById('payload').value;
+
+            const response = await fetch(`/ingest/${subscriptionId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ payload: JSON.parse(payload) }),
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText = result.message;
+        }
+    </script>
+</head>
+<body>
+    <h1>Webhook Ingestion</h1>
+    <form onsubmit="event.preventDefault(); sendWebhook();">
+        <label for="subscription_id">Subscription ID:</label><br>
+        <input type="text" id="subscription_id" name="subscription_id"><br><br>
+
+        <label for="payload">Payload (JSON):</label><br>
+        <textarea id="payload" name="payload"></textarea><br><br>
+
+        <button type="submit">Send Webhook</button>
+    </form>
+
+    <p id="result"></p>
+</body>
+</html>

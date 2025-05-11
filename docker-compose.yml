@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  # FastAPI app
+  app:
+    build: .
+    container_name: fastapi-app
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  # Celery Worker
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    container_name: celery-worker
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+
+  # Redis Service
+  redis:
+    image: "redis:latest"
+    container_name: redis
+    ports:
+      - "6379:6379"
