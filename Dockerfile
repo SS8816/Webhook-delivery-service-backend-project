@@ -1,19 +1,23 @@
-# Dockerfile for FastAPI app
-
+# Use the official Python image from Docker Hub as the base image
 FROM python:3.9-slim
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
+# Copy the requirements.txt file into the container
+COPY requirements.txt /app/
+
+# Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the project files
-COPY . .
+# Copy the rest of the application code into the container
+COPY . /app/
 
-# Expose port 8000 for FastAPI
+# Set environment variable for Flask to run in production mode
+ENV FLASK_ENV=production
+
+# Expose the port that the Flask app will run on
 EXPOSE 8000
 
-# Command to run FastAPI app with Uvicorn
+# Command to run your application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

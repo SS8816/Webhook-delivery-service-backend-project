@@ -11,6 +11,8 @@ services:
       - REDIS_HOST=redis
     depends_on:
       - redis
+    volumes:
+      - .:/usr/src/app
 
   # Celery Worker
   celery:
@@ -20,8 +22,18 @@ services:
     container_name: celery-worker
     depends_on:
       - redis
+    # make your code directory importable
     environment:
       - REDIS_HOST=redis
+      - PYTHONPATH=/usr/src/app
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    command: >
+      celery
+      -A app.celery_worker.celery_app
+      worker
+      --loglevel=info
 
   # Redis Service
   redis:
